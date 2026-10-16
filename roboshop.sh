@@ -3,7 +3,7 @@
 AMI_ID="ami-0220d79f3f480ecf5"
 ZONE_ID="Z077495923IYBERYWZVDY" # replace with your zone ID
 DOMAIN_NAME="devops90s.shop"
-SG_ID=" # replace with your domain name
+SG_ID="sg-09fe9d64c7e2f30c4" # replace with your domain name
 
 for instance in $@
 do
@@ -11,7 +11,7 @@ do
     INSTANCE_ID=$(aws ec2 run-instances \
         --image-id ami-0220d79f3f480ecf5 \
         --instance-type t3.micro \
-        --security-groups "roboshop-common" "roboshop-$instance" \
+        --security-group-ids $SG_ID "roboshop-$instance" \
         --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=roboshop-$instance}]" \
         --query 'Instances[0].InstanceId' \
         --output text
@@ -32,29 +32,30 @@ do
         R53_RECORD="$instance.$DOMAIN_NAME"
     fi
     
-    #### Updating R53 Record ####
+    echo "IP Address: $IP"
+
     aws route53 change-resource-record-sets \
     --hosted-zone-id $ZONE_ID \
     --change-batch '
-        {
-            "Comment": "Update A record to new IP",
-            "Changes": [
+    {
+        "Comment": "Updating record",
+        "Changes": [
+            {
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+                "Name": "'$RECORD_NAME'",
+                "Type": "A",
+                "TTL": 1,
+                "ResourceRecords": [
                 {
-                    "Action": "UPSERT",
-                    "ResourceRecordSet": {
-                        "Name": "'$R53_RECORD'",
-                        "Type": "A",
-                        "TTL": 1,
-                        "ResourceRecords": [
-                            {
-                                "Value": "'$IP'"
-                            }
-                        ]
-                    }
+                    "Value": "'$IP'"
                 }
-            ]
-        }
+                ]
+            }
+            }
+        ]
+    }
     '
-
 done
- 
+
+
