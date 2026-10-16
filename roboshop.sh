@@ -1,8 +1,9 @@
 #!/bin/bash
 
 AMI_ID="ami-0220d79f3f480ecf5"
-# ZONE_ID="Z07086101C1CVP7AT2UK4" # replace with your zone ID
-# DOMAIN_NAME="daws90s.shop" # replace with your domain name
+ZONE_ID="Z077495923IYBERYWZVDY" # replace with your zone ID
+DOMAIN_NAME="devops90s.shop"
+SG_ID=" # replace with your domain name
 
 for instance in $@
 do
@@ -31,29 +32,29 @@ do
         R53_RECORD="$instance.$DOMAIN_NAME"
     fi
     
-    # #### Updating R53 Record ####
-    # aws route53 change-resource-record-sets \
-    # --hosted-zone-id $ZONE_ID \
-    # --change-batch '
-    #     {
-    #         "Comment": "Update A record to new IP",
-    #         "Changes": [
-    #             {
-    #                 "Action": "UPSERT",
-    #                 "ResourceRecordSet": {
-    #                     "Name": "'$R53_RECORD'",
-    #                     "Type": "A",
-    #                     "TTL": 1,
-    #                     "ResourceRecords": [
-    #                         {
-    #                             "Value": "'$IP'"
-    #                         }
-    #                     ]
-    #                 }
-    #             }
-    #         ]
-    #     }
-    # '
+    #### Updating R53 Record ####
+    aws route53 change-resource-record-sets \
+    --hosted-zone-id $ZONE_ID \
+    --change-batch '
+        {
+            "Comment": "Update A record to new IP",
+            "Changes": [
+                {
+                    "Action": "UPSERT",
+                    "ResourceRecordSet": {
+                        "Name": "'$R53_RECORD'",
+                        "Type": "A",
+                        "TTL": 1,
+                        "ResourceRecords": [
+                            {
+                                "Value": "'$IP'"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    '
 
 done
  
