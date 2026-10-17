@@ -3,14 +3,14 @@
 AMI_ID="ami-0220d79f3f480ecf5"
 ZONE_ID="Z077495923IYBERYWZVDY" # replace with your zone ID
 DOMAIN_NAME="devops90s.shop" # replace with your domain name
-
+SG-ID="09fe9d64c7e2f30c4"
 for instance in $@
 do
     echo "Launching instance: $instance"
     INSTANCE_ID=$(aws ec2 run-instances \
         --image-id ami-0220d79f3f480ecf5 \
         --instance-type t3.micro \
-        --security-group-ids "roboshop-common" "roboshop-$instance" \
+        --security-group-ids "$SG_ID" "roboshop-$instance" \
         --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=roboshop-$instance}]" \
         --query 'Instances[0].InstanceId' \
         --output text
