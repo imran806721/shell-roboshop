@@ -3,7 +3,7 @@
 AMI_ID="ami-0220d79f3f480ecf5"
 ZONE_ID="Z077495923IYBERYWZVDY" # replace with your zone ID
 DOMAIN_NAME="devops90s.shop" # replace with your domain name
-SG-ID="09fe9d64c7e2f30c4"
+SG-ID="sg-09fe9d64c7e2f30c4"
 for instance in $@
 do
     echo "Launching instance: $instance"
