@@ -33,28 +33,30 @@ do
     
     echo "IP Address: $IP"
 
+    RECORD_NAME="$instance.$DOMAIN_NAME"
+
     aws route53 change-resource-record-sets \
-    --hosted-zone-id $ZONE_ID \
-    --change-batch '
-    {
-        "Comment": "Updating record",
-        "Changes": [
+    --hosted-zone-id "$ZONE_ID" \
+    --change-batch "{
+        \"Comment\": \"Updating record\",
+        \"Changes\": [
             {
-            "Action": "UPSERT",
-            "ResourceRecordSet": {
-                "Name": "'$RECORD_NAME'",
-                "Type": "A",
-                "TTL": 1,
-                "ResourceRecords": [
-                {
-                    "Value": "'$IP'"
+                \"Action\": \"UPSERT\",
+                \"ResourceRecordSet\": {
+                    \"Name\": \"$RECORD_NAME\",
+                    \"Type\": \"A\",
+                    \"TTL\": 60,
+                    \"ResourceRecords\": [
+                        {
+                            \"Value\": \"$IP\"
+                        }
+                    ]
                 }
-                ]
-            }
             }
         ]
-    }
-    '
+    }"
+
+
 
 done
 
